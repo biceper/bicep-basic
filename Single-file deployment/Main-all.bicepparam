@@ -15,8 +15,12 @@ param staticIPaddress = [
   '10.1.0.11'
   '10.1.0.12'
 ]
+
+/*
 param sqlLoginId = 'adminuser'
 param sqlLoginPassword = 'Rduaain08180422'
+*/
+
 param ipAddressPrefixBastionSubnet = '10.0.0.0/26'
 param tags = {
   environment: 'poc'
