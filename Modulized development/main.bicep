@@ -165,6 +165,7 @@ module createVM './modules/5.virtualMachine.bicep' = [for i in vmIndex: if(Exist
   }
 }]
 
+/*
 // 6. create a SQL Server and a SQL Database
 module createSQLServer './modules/6.sqlServer&Database.bicep' = if(ExistSQLServer) {
 name: 'createSQLServer'
@@ -177,9 +178,10 @@ params: {
   sqlLoginPassword:sqlLoginPassword
 }
 }
+*/
 
 // 7. create a bastion subnet in the hub virtual network
-module createBastion './modules/7.bastion.bicep' = if(ExistBastion) {
+module createBastion './modules/6.bastion.bicep' = if(ExistBastion) {
   name: 'createBastion'
   dependsOn: [
     createHubVNet

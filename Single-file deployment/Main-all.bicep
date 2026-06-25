@@ -4,7 +4,6 @@
 //location will be inherited from the resource group
 // - - - - - - - - - - - - -
 // - - - - - - - - - - - - -
-
 // - - - Paremeters defination - - - 
 @description('Parameter for location')
 param location string = resourceGroup().location
@@ -35,38 +34,18 @@ param staticIPaddress array = ['10.1.0.10', '10.1.0.11']
 param adun string
 @secure()
 param adps string
-
-/*
-// - - - SQL Server - - -
-@description('Parameters for SQL Server')
-var sqlServerName = 'poc${uniqueString(resourceGroup().id,deployment().name)}'
-var sqlDatabaseName = 'pocbicepsqldatabase'
-
-@secure()
-param sqlLoginId string
-@secure()
-param sqlLoginPassword string
-// @description('Azure AD Administrator for SQL Server (must be different from sqlLoginId)')
-//@secure()
-//param aadAdminLogin string
-*/
-
 // - - - Public IP(Bastion) - - -
-/*
 @description('Parameters for Public IP(Bastion)')
 var publicIpName = 'poc-Bastion-PublicIP'
 var publicIpAllocationMethod = 'Static'
 var publicIpAddressVersion = 'IPv4'
 var publicIpSkuName = 'Standard'
 var publicIpSkuTier = 'Regional'
-*/
 // - - - Bastion - - -
 @description('Parameters for Bastion')
 var bastionSubnetName = 'AzureBastionSubnet'
 param ipAddressPrefixBastionSubnet string = '10.0.0.0/26'
-/*
 var bastionName = 'poc-Bastion-Hub'
-*/
 // - - - Storage Account - - -
 @description('Parameters for Storage Account')
 var storageAccountName = 'poc${uniqueString(resourceGroup().id,deployment().name)}'
@@ -80,6 +59,19 @@ param tags object = {
 // - - - Log Analytics - - -
 // @description('Parameters for Log Analytics')
 // param logAnalyticsWorkspace string = 'poc-${uniqueString(resourceGroup().id,deployment().name,location)}'
+/*
+// - - - SQL Server - - -
+@description('Parameters for SQL Server')
+var sqlServerName = 'poc${uniqueString(resourceGroup().id,deployment().name)}'
+var sqlDatabaseName = 'pocbicepsqldatabase'
+@secure()
+param sqlLoginId string
+@secure()
+param sqlLoginPassword string
+// @description('Azure AD Administrator for SQL Server (must be different from sqlLoginId)')
+//@secure()
+//param aadAdminLogin string
+*/
 
 //-------
 //-------
@@ -103,6 +95,9 @@ resource spokeVNet 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: vnetNameSpk
   tags: tags
   location: location
+  dependsOn: [
+    hubVNet
+  ]
   properties: {
     addressSpace: {
       addressPrefixes: ipAddressPrefixSpk
@@ -316,11 +311,11 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2025-01-01' = {
     capacity: 10
   }
 }
-
 */
+
 //---------
-// 7. create a bastion subnet in the hub virtual network
-// 7-1. create a bastion subnet in the hub virtual network
+// 6. create a bastion subnet in the hub virtual network
+// 6-1. create a bastion subnet in the hub virtual network
 resource subnetOfBastion 'Microsoft.Network/virtualNetworks/subnets@2025-05-01' = {
   name: bastionSubnetName
   parent: hubVNet
@@ -329,8 +324,7 @@ resource subnetOfBastion 'Microsoft.Network/virtualNetworks/subnets@2025-05-01' 
   }
 }
 
-/*
-// 7-2. create a public IP address for the bastion host
+// 6-2. create a public IP address for the bastion host
 resource publicIp 'Microsoft.Network/publicIPAddresses@2025-05-01' = {
   name: publicIpName
   tags: tags
@@ -345,7 +339,7 @@ resource publicIp 'Microsoft.Network/publicIPAddresses@2025-05-01' = {
   }
 }
 
-// 7-3. create a bastion host in the bastion subnet
+// 6-3. create a bastion host in the bastion subnet
 resource bastionHost 'Microsoft.Network/bastionHosts@2025-05-01' = {
   name: bastionName
   tags: tags
@@ -374,5 +368,4 @@ resource bastionHost 'Microsoft.Network/bastionHosts@2025-05-01' = {
     ]
   }
 }
-*/
 //---EOF----
